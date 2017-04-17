@@ -25,7 +25,7 @@ import com.cunha.admin.models.ApiError;
 
 
 
-
+@ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Override

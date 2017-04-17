@@ -1,5 +1,5 @@
 angular.module('son', ['ui.router', 'oc.lazyLoad', 'ngStorage', 'ngCookies', 'ui.bootstrap', 'ui.utils.masks', 'ngAnimate',
-    'angular-loading-bar','toaster','ngTouch','angularMoment','ngSanitize', 'ngCsv'])
+    'angular-loading-bar','toaster','ngTouch','angularMoment','ngSanitize', 'ngCsv','ngResource'])
     .run(['$rootScope', '$state', '$stateParams', '$window', '$location', '$uibModal', 'AuthService','APP_MENUS',
         function ($rootScope, $state, $stateParams, $window, $location, $modal, AuthService,APP_MENUS) {
 
@@ -11,7 +11,7 @@ angular.module('son', ['ui.router', 'oc.lazyLoad', 'ngStorage', 'ngCookies', 'ui
 
             
             $rootScope.app = {
-                name: 'SalesON',
+                name: 'ONlineADM',
                 description: 'CRM completo para Vendas',
                 year: ((new Date()).getFullYear()),
                 layout: {

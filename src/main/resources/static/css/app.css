@@ -7134,8 +7134,8 @@ fieldset[disabled] .btn-pink.active {
 
 .panel-dark > .panel-heading {
   color: #ffffff;
-  background-color: #f05050;
-  border-color: #f05050;
+  background-color: #2b957a;
+  border-color: #2b957a;
 }
 .panel-dark > .panel-heading + .panel-collapse > .panel-body {
   border-top-color: #cfdbe2;

@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,13 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cunha.admin.daos.UserDAO;
 import com.cunha.admin.models.Usuario;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 @RequestMapping("/api/admin/usuarios")
 @RestController
@@ -46,14 +40,20 @@ public class UsuarioController {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/lista")
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Object> lista() {
 		List<Usuario> listaUsuarios = userDAO.listaTodos();
-		return new ResponseEntity<>(listaUsuarios, new HttpHeaders(), HttpStatus.OK);
+		ObjectNode nodeResposta = mapper.createObjectNode();
+		nodeResposta.put("descricao", "Listados com sucesso!");
+		// nodeResposta.put("objeto", userRetorno.toString());
+		JsonNode node = mapper.convertValue(listaUsuarios, JsonNode.class);
+		nodeResposta.set("lista", node);
+		
+		return new ResponseEntity<>(nodeResposta, new HttpHeaders(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/salva", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Object> save(@RequestBody Usuario usuario) throws IOException {
 		System.out.println("Salvando o usuario : " + usuario.toString());
@@ -62,23 +62,22 @@ public class UsuarioController {
 		usuario.setLogin(usuario.getLogin().toLowerCase());
 
 		HttpStatus httpStatus = null;
-
 		ObjectNode nodeResposta = mapper.createObjectNode();
 
 		if (userDAO.existeUsuarioOrEmail(usuario.getUsername(), usuario.getEmail()) == true) {
 			// responseEntity = new ResponseEntity<Object>("deu errado", new
 			// HttpHeaders(), HttpStatus.CONFLICT);
-			nodeResposta.put("descricao", "O usuario ou o email já está cadastrado, cadastre outro!");
+			nodeResposta.put("descricao", "O usuario ou o email ja esta cadastrado, cadastre outro!");
 			httpStatus = HttpStatus.CONFLICT;
 		} else {
 			Usuario userRetorno = userDAO.salva(usuario);
 			enviaEmail(userRetorno.getEmail(), "herculano.cunha2@gmail.com", "Serra Dourada Conta no sitema de Vendas",
 					"Olá seu usuário é " + userRetorno.getUsername() + " e sua senha " + userRetorno.getPassword());
 
-			nodeResposta.put("descricao", "Usário cadastrado com sucesso!");
+			nodeResposta.put("descricao", "Usuario cadastrado com sucesso!");
 			// nodeResposta.put("objeto", userRetorno.toString());
 			JsonNode node = mapper.convertValue(userRetorno, JsonNode.class);
-			nodeResposta.put("objeto", node);
+			nodeResposta.set("objeto", node);
 			httpStatus = HttpStatus.OK;
 		}
 
@@ -86,7 +85,7 @@ public class UsuarioController {
 
 	}
 
-	@RequestMapping(value = "/atualiza", method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<Object> atualiza(@RequestBody Usuario usuario) {
 		HttpStatus httpStatus = null;
@@ -94,17 +93,18 @@ public class UsuarioController {
 
 		usuario = userDAO.atualiza(usuario);
 
-		nodeResposta.put("descricao", "Usário atualizado com sucesso!");
+		nodeResposta.put("descricao", "Usuario atualizado com sucesso!");
+	
 		// nodeResposta.put("objeto", userRetorno.toString());
 		JsonNode node = mapper.convertValue(usuario, JsonNode.class);
-		nodeResposta.put("objeto", node);
+		nodeResposta.set("objeto", node);
 		httpStatus = HttpStatus.OK;
 
 		return new ResponseEntity<Object>(nodeResposta, new HttpHeaders(), httpStatus);
 	}
 	
 	
-	@RequestMapping(value = "/deleta", method = RequestMethod.DELETE)
+	@RequestMapping(method = RequestMethod.DELETE)
 	@ResponseBody
 	public ResponseEntity<Object> deleta(@RequestBody Usuario usuario) {
 		HttpStatus httpStatus = null;
@@ -113,11 +113,11 @@ public class UsuarioController {
 		Usuario usuarioLoad= userDAO.carregaUsuairoLogin(usuario.getLogin().toLowerCase());
 		
 		if(usuarioLoad == null){
-			nodeResposta.put("descricao", "O usuario não foi encontrado!");
+			nodeResposta.put("descricao", "O usuario nao foi encontrado!");
 			httpStatus = HttpStatus.NOT_FOUND;
 		}else{
 			userDAO.deleta(usuarioLoad);
-			nodeResposta.put("descricao", "Usário deletado com sucesso!");
+			nodeResposta.put("descricao", "Usuario deletado com sucesso!");
 			httpStatus = HttpStatus.OK;
 		}
 

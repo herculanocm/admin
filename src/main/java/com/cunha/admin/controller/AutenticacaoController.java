@@ -84,7 +84,7 @@ public class AutenticacaoController {
 				httpStatus = HttpStatus.OK;
 				nodeResposta.put("descricao", "A senha está correta");
 				JsonNode node = mapper.convertValue(usuarioLoad, JsonNode.class);
-				nodeResposta.put("objeto", node);
+				nodeResposta.set("objeto", node);
 			}
 			
 		}	

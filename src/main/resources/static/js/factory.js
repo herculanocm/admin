@@ -8,6 +8,18 @@ angular.module('son')
         };
 
     }])
+     .factory('UsuarioService', ['APP_END_POINT','$resource', function (APP_END_POINT,$resource) {
+
+        return $resource(APP_END_POINT+'/api/admin/usuarios',null,
+        		{ 'get':    {method:'GET'},
+        	  'save':   {method:'POST'},
+        	  'query':  {method:'GET', isArray:true},
+        	  'remove': {method:'DELETE'},
+        	  'delete': {method:'DELETE'} }		
+        
+        );
+
+    }])
     .factory('AuthService', ['APP_END_POINT', '$http', '$localStorage', '$sessionStorage', '$location', '$rootScope', '$state', 'APP_MENUS',
         function (APP_END_POINT, $http, $localStorage, $sessionStorage, $location, $rootScope, $state, APP_MENUS) {
 

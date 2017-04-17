@@ -22,9 +22,9 @@ angular
                 $scope.isNavCollapsed = true;
                 $scope.isCollapsed = true;
                 $scope.isCollapsedHorizontal = false;
-                //$scope.user = AuthService.getUserSessionStorage();
+                $scope.user = AuthService.getUserSessionStorage();
 
-                /*
+                
 
                  if (!$scope.user || $scope.user == null || $scope.user == undefined) {
                  $state.go('page.login', '', {notify: false}).then(function () {
@@ -36,7 +36,7 @@ angular
                  $rootScope.$broadcast('$stateChangeSuccess');
                  });
                  }
-                 */
+                 
 
                 var thBar;
                 $rootScope.$on('$stateChangeStart', function (event,
@@ -50,7 +50,7 @@ angular
                         }, 0); // sets a latency Threshold
                     }
 
-                    /*
+                    
                      if (!AuthService.isAuth()) {
 
                      //console.log('Usuario não esta logado');
@@ -75,7 +75,7 @@ angular
                      } else {
                      return;
                      }
-                     */
+                     
                 });
 
                 $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState,
@@ -263,9 +263,11 @@ angular
             '$log',
             '$state',
             '$localStorage',
+            '$resource',
+            'UsuarioService',
             function ($scope, AuthService, $window, $rootScope,
-                      $log, $state, $localStorage) {
-                //console.log('iniciou o controler login');
+                      $log, $state, $localStorage,$resource,UsuarioService) {
+                console.log('iniciou o controler login');
 
                 AuthService.logout();
 
@@ -273,49 +275,23 @@ angular
                  Metodo de Login
                  */
                 $scope.findUser = function (login) {
-                    ////console.log('usuario e senha digitados '+JSON.stringify(login));
+                    console.log('usuario e senha digitados '+JSON.stringify(login));
+                    var user = UsuarioService.get({},function(data){
+                    	 console.log('data '+JSON.stringify(data));
+                    });
+                    console.log('user '+JSON.stringify(user));
+                    
+                    /*
+                    var User = $resource('http://localhost:8080/api/admin/usuarios/lista');
+                    User.get()
+                        .$promise.then(function(user) {
+                        	console.log('resposta '+JSON.stringify(user));
+                        }, function(err){
+                        	console.log('err '+JSON.stringify(err));
+                        });
+                        */
 
-                    var resposta = AuthService.login(login);
-                    resposta
-                        .then(
-                            function (resp) {
-                                var resultado = resp.data;
-                                ////console.log('usuario e senha digitados '+JSON.stringify(resultado));
-                                if (resultado.type) {
-                                    var user = resultado.data;
-
-                                    if (user.perfil.acessos == null) {
-                                        user.perfil.acessos = [];
-                                    }
-
-                                    AuthService
-                                        .setUserSessionStorage(user);
-                                    $state
-                                        .go('app.wellcome');
-                                    //console.log('login '+JSON.stringify( resultado.data));
-                                } else {
-                                    $rootScope
-                                        .warn(
-                                            ''
-                                            + resultado.des,
-                                            'ATENÇÃO',
-                                            function () {
-                                            });
-                                }
-
-                            },
-                            function (error) {
-                                $rootScope
-                                    .warn(
-                                        'Erro ao realizar o login, favor contate o administrador do sistema.',
-                                        'ATENÇÃO',
-                                        function () {
-                                            ////console.log('mensagem enviadoa');
-                                        });
-
-                                $log.error('Eror ' + error);
-                            });
-
+                   
                 };
 
             }])
