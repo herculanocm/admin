@@ -32,7 +32,7 @@ angular.module('son')
              */
 
             authService.login = function (credentials) {
-                return $http.post(APP_END_POINT + '/authenticate', credentials);
+                return $http.post(APP_END_POINT + '/api/admin/autenticacao/auth', credentials);
             };
 
             authService.getUsuarios = function () {

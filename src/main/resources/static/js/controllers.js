@@ -276,20 +276,27 @@ angular
                  */
                 $scope.findUser = function (login) {
                     console.log('usuario e senha digitados '+JSON.stringify(login));
-                    var user = UsuarioService.get({},function(data){
-                    	 console.log('data '+JSON.stringify(data));
-                    });
-                    console.log('user '+JSON.stringify(user));
+                   
                     
-                    /*
-                    var User = $resource('http://localhost:8080/api/admin/usuarios/lista');
-                    User.get()
-                        .$promise.then(function(user) {
-                        	console.log('resposta '+JSON.stringify(user));
-                        }, function(err){
-                        	console.log('err '+JSON.stringify(err));
-                        });
-                        */
+                    var respostaUni = AuthService.login(login);
+                respostaUni.then(function (resp) {
+                        var resultado = resp.data;
+
+                        console.log('resposta json'
+                            + JSON.stringify(resp));
+
+                        console.log('resposta '
+                            + resp);
+
+                    },
+                    function (error) {
+                        $log.error('Eror '
+                            + JSON.stringify(error));
+                        $rootScope.warn('ERRO ', 'ATENÇÃO',
+                            function () {
+                                //console.log('mensagem enviadoa');
+                            });
+                    });
 
                    
                 };

@@ -1,4 +1,4 @@
-package com.cunha.admin.conf;
+package com.cunha.admin.conf; 
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
