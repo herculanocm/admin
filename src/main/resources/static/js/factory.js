@@ -25,284 +25,43 @@ angular.module('son')
 
             var authService = {};
             
-            /*
-
-             Metodos de transmissao
-
-             */
-
+           
+            
             authService.login = function (credentials) {
-                return $http.post(APP_END_POINT + '/api/admin/autenticacao/auth', credentials);
+                //return $http.post(APP_END_POINT + '/api/admin/autenticacao/auth', credentials);
+                
+                return $http.post(APP_END_POINT+'/api/admin/autenticacao/auth', credentials);
             };
-
-            authService.getUsuarios = function () {
-                return $http.get(APP_END_POINT + '/usuarios');
-            };
-
-            authService.getRotasUser = function (id) {
-                return $http.get(APP_END_POINT + '/rotasUser/' + id);
-            };
-
-            authService.getRotas = function () {
-                return $http.get(APP_END_POINT + '/rotas');
-            };
-
-            authService.getPerfils = function () {
-                return $http.get(APP_END_POINT + '/perfils');
-            };
-
-            authService.setUsuario = function (usuario) {
-                return $http.post(APP_END_POINT + '/usuario', usuario);
-            };
-
-            authService.setPerfilApp = function (perfil) {
-                return $http.post(APP_END_POINT + '/add/perfil', perfil);
-            };
-
-            authService.setResetSenha = function (user) {
-                return $http.post(APP_END_POINT + '/usuarioResetSenha', user);
-            };
-
-            authService.setUsuarioProfile = function (usuario) {
-                return $http.post(APP_END_POINT + '/usuarioProfile', usuario);
-            };
-
-
-            authService.putUsuario = function (usuario) {
-                return $http.put(APP_END_POINT + '/usuarioAlter', usuario);
-            };
-
-            authService.putPerfil = function (alter) {
-                return $http.put(APP_END_POINT + '/perfilAlter', alter);
-            };
-
-
-            /*
-             Metodos de controles
-             */
-
-            authService.menusVisiveis = function () {
-                var menus = APP_MENUS.filter(function (menu) {
-                    return menu.menu == true;
-                });
-                return menus;
-            };
-
-            authService.menusAcessos = function () {
-                var usuarioLogadoSidebar = authService.getUserSessionStorage();
-                var menus = authService.menusVisiveis();
-                return menus;
-/*
-                if (usuarioLogadoSidebar.perfil.nome == 'ADMIN') {
-                    return menus;
-                } else {
-                    var acessos = usuarioLogadoSidebar.perfil.acessos;
-                    //menu superior
-                    var menusFiltrados = menus.filter(function (menu) {
-                        for (var i = 0; i < acessos.length; i++) {
-                            if (menu._id == acessos[i]._id && acessos[i].modelo == true) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    });
-                    //menu inferior
-                    var estadosPermitidos = [];
-                    for (var i = 0; i < menusFiltrados.length; i++) {
-                        estadosPermitidos.push({_id: menusFiltrados[i]._id, sref: menusFiltrados[i].sref});
-
-                        if (typeof(menusFiltrados[i].submenu) != "undefined") {
-                            menusFiltrados[i].submenu = menusFiltrados[i].submenu.filter(function (submenu) {
-                                for (var i = 0; i < acessos.length; i++) {
-                                    if (submenu._id == acessos[i]._id && acessos[i].modelo == true) {
-                                        estadosPermitidos.push({_id: submenu._id, sref: submenu.sref});
-                                        return true;
-                                    }
-                                }
-                                return false;
-                            });
-                        }
-                    }
-                    ////console.log('Estados permitidos' + JSON.stringify(estadosPermitidos));
-                    authService.setEstadosPermitidoSessionStorage(estadosPermitidos);
-                    return menusFiltrados;
-                }
-                */
-            };
+            
+           
+            
 
             authService.setUserSessionStorage = function (user) {
                 user.block = false;
                 $sessionStorage.user = user;
             };
-
-            authService.setPerfilSessionStorage = function (perfil) {
-
-
-                var acessos = perfil.acessos;
-                var menus = APP_MENUS;
-
-                for (var i = 0; i < menus.length; i++) {
-
-                    var result = acessos.filter(function (acesso) {
-                        return acesso._id == menus[i]._id;
-                    });
-
-                    if (result == null || result.length == 0 || result[0].modelo == undefined || result[0].modelo == null || !result[0].modelo) {
-                        menus[i].modelo = false;
-                    } else {
-                        menus[i].modelo = true;
-                    }
-
-                    for (var j = 0; j < menus[i].submenu.length; j++) {
-
-                        var result2 = acessos.filter(function (acesso) {
-                            return acesso._id == menus[i].submenu[j]._id;
-                        });
-
-                        if (result2 == null || result2.length == 0 || result2[0].modelo == undefined || result2[0].modelo == null || !result2[0].modelo) {
-                            menus[i].submenu[j].modelo = false;
-                        } else {
-                            menus[i].submenu[j].modelo = true;
-                        }
-                    }
-
-
-                }
-
-                // //console.log('Menus : '+JSON.stringify(menus));
-
-                $sessionStorage.perfil = perfil;
-                $sessionStorage.menus = menus;
+            
+            authService.setUserLocalStorage = function (user) {
+                $localStorage.user = user;
             };
 
-            authService.modeloMenuPerfil = function (menus, perfil) {
-
-                var acessos = perfil[0].acessos;
-
-                //console.log('acessos fact ' + JSON.stringify(acessos));
-
-                for (var i = 0; i < menus.length; i++) {
-
-                    var result = acessos.filter(function (acesso) {
-                        return acesso._id == menus[i]._id;
-                    });
-
-                    if (result == null || result.length == 0 || result[0].modelo == undefined || result[0].modelo == null || !result[0].modelo) {
-                        menus[i].modelo = false;
-                    } else {
-                        menus[i].modelo = true;
-                    }
-
-                    for (var j = 0; j < menus[i].submenu.length; j++) {
-
-                        var result2 = acessos.filter(function (acesso) {
-                            return acesso._id == menus[i].submenu[j]._id;
-                        });
-
-                        if (result2 == null || result2.length == 0 || result2[0].modelo == undefined || result2[0].modelo == null || !result2[0].modelo) {
-                            menus[i].submenu[j].modelo = false;
-                        } else {
-                            menus[i].submenu[j].modelo = true;
-                        }
-                    }
-
-
-                }
-
-                return menus;
-            };
-
-            authService.getPerfilSessionStorage = function () {
-                return $sessionStorage.perfil;
-            };
-
+    
 
             authService.getUserSessionStorage = function () {
                 return $sessionStorage.user;
             };
 
-
-            authService.getEstadosPermitidoSessionStorage = function () {
-                return $sessionStorage.estadosPermitidos;
-            };
-
-            authService.setEstadosPermitidoSessionStorage = function (estadosPermitidos) {
-                $sessionStorage.estadosPermitidos = estadosPermitidos;
-            };
-
-            authService.isEstadosPadroes = function (state) {
-                if (state != 'page.login' && state != 'app.profile' && state != 'app.wellcome') {
-                    return true;
-                } else {
-                    return false;
-                }
-            };
-
-            authService.isMenuState = function (state) {
-                var estadosPermitidos = authService.getEstadosPermitidoSessionStorage();
-                var user = authService.getUserSessionStorage();
-                if (user.perfil.nome == 'ADMIN') {
-                    return true;
-                } else {
-                    var estadosFiltrados = estadosPermitidos.filter(function (estado) {
-                        return estado.sref == state;
-                    });
-
-                    if (estadosFiltrados.length >= 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-
-            };
-
-
+            
             authService.isAuth = function () {
-                if ($sessionStorage.user != undefined && $sessionStorage.user != null && $sessionStorage.user != NaN && $sessionStorage.user._id != undefined && $sessionStorage.user._id != null) {
+                if (typeof($sessionStorage.user) != "undefined" && $sessionStorage.user != null && typeof($sessionStorage.user.login) != undefined && $sessionStorage.user.login != null) {
                     return true;
                 } else {
                     return false;
                 }
             };
 
-            authService.isAlterPass = function () {
-                if ($sessionStorage.user.indAlteraSenha == 'S') {
-                    return true;
-                } else {
-                    return false;
-                }
-            };
-
-            authService.alterPass = function (senha) {
-                $sessionStorage.user.desSenha = senha;
-                $sessionStorage.user.indAlteraSenha = 'N';
-            };
 
 
-            authService.block = function () {
-                //console.log('Bloqueando Usuario');
-                $sessionStorage.user.block = true;
-            };
-
-            authService.unBlock = function (pass) {
-                var passUser = $sessionStorage.user.desSenha;
-                if (passUser == pass) {
-                    $sessionStorage.user.block = false;
-                    //console.log('Usuario desbloqueado!');
-                    return true;
-                } else {
-                    return false;
-                }
-            };
-
-            authService.isBlock = function () {
-                if ($sessionStorage.user.block == false) {
-                    return false;
-                } else {
-                    return true;
-                }
-            };
 
             authService.logout = function () {
                 delete $sessionStorage.user;

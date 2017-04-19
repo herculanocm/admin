@@ -28,11 +28,7 @@ angular
 
                  if (!$scope.user || $scope.user == null || $scope.user == undefined) {
                  $state.go('page.login', '', {notify: false}).then(function () {
-                 $rootScope.$broadcast('$stateChangeSuccess');
-                 });
-                 } else if (AuthService.isAlterPass()) {
-                 event.preventDefault();
-                 $state.go('page.recover', '', {notify: false}).then(function () {
+                	 console.log('foi para o login');
                  $rootScope.$broadcast('$stateChangeSuccess');
                  });
                  }
@@ -61,21 +57,19 @@ angular
                      $rootScope.$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
                      });
 
-                     } else if (AuthService.isAlterPass()) {
-                     event.preventDefault();
-                     $state.go('page.recover', toParams, {notify: false}).then(function () {
-                     $rootScope.$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
-                     });
-                     } else if (!AuthService.isMenuState(toState.name) && AuthService.isEstadosPadroes(toState.name)) {
+                     } else {
+                     return;
+                     }
+                     
+                     /*
+                      * else if (!AuthService.isMenuState(toState.name) && AuthService.isEstadosPadroes(toState.name)) {
                      event.preventDefault();
                      $state.go('app.nroute', toParams, {notify: false}).then(function () {
                      $rootScope.$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
                      });
 
-                     } else {
-                     return;
-                     }
-                     
+                     } 
+                      * */
                 });
 
                 $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState,
@@ -166,7 +160,8 @@ angular
             '$rootScope',
             '$log',
             '$http',
-            function ($scope, $rootScope, $log, $http) {
+            '$state',
+            function ($scope, $rootScope, $log, $http,$state) {
 
                 $scope.chartVendedores = {};
                 $scope.chartVendedores.type = 'BarChart';
@@ -199,57 +194,8 @@ angular
                  */
 
                 $scope.enviarDados = function () {
-                    /*
-                     var cliente = {
-                     nome : 'Herculano Cunha Madureira',
-                     logradouro : 'Rua Siomara carla de Jesus',
-                     bairro : 'Shopping Park',
-                     estado : 'MG',
-                     cidade: 'Uberlandia',
-                     numero : 65,
-                     ierg: '1sd1df155f5',
-                     cep : 548484,
-                     fonePrincipal : 656165655,
-                     foneResidencial : 651616516,
-                     cgc: 10739010689,
-                     fantasia: 'fantasia teste',
-                     clienteTipo: 0
-
-                     };
-
-                     */
-                    var usuario = {
-                        login: 'herculanocm',
-                        password: 'shalon',
-                        name: 'Herculano Cunha',
-                        email: 'herculano.cunha2@gmail.com',
-                        roles: ['ROLE_ADMIN', 'ROLE_USER']
-                    };
-
-                    var grupoCliente = {id: 0,nome: null, outro: 'sdfadfasfasfsfs'};
-
-                    var respostaUni = $http
-                        .post(
-                            'http://localhost:8080/api/admin/grupocliente/salva',
-                            grupoCliente);
-                    respostaUni.then(function (resp) {
-                            var resultado = resp.data;
-
-                            console.log('resposta json'
-                                + JSON.stringify(resp));
-
-                            console.log('resposta '
-                                + resp);
-
-                        },
-                        function (error) {
-                            $log.error('Eror '
-                                + JSON.stringify(error));
-                            $rootScope.warn('ERRO ', 'ATENÇÃO',
-                                function () {
-                                    //console.log('mensagem enviadoa');
-                                });
-                        });
+                	console.log('enviando dados');
+                	$state.go('app.veiculos');
                 };
 
             }])
@@ -275,24 +221,25 @@ angular
                  Metodo de Login
                  */
                 $scope.findUser = function (login) {
-                    console.log('usuario e senha digitados '+JSON.stringify(login));
-                   
-                    
+                    //console.log('usuario e senha digitados '+JSON.stringify(login));
+                 
                     var respostaUni = AuthService.login(login);
                 respostaUni.then(function (resp) {
-                        var resultado = resp.data;
+                       var usuario= resp.data;
 
-                        console.log('resposta json'
-                            + JSON.stringify(resp));
-
-                        console.log('resposta '
-                            + resp);
+                       AuthService.setUserSessionStorage(usuario);
+                       
+                       if(typeof(login.lembrar) != "undefined" && login.lembrar == true){
+                    	   AuthService.setUserLocalStorage(usuario);
+                       }
+                       
+                       $state.go('app.dashboard');
 
                     },
                     function (error) {
                         $log.error('Eror '
                             + JSON.stringify(error));
-                        $rootScope.warn('ERRO ', 'ATENÇÃO',
+                        $rootScope.warn('ERRO '+error.data.descricao, 'ATENÇÃO',
                             function () {
                                 //console.log('mensagem enviadoa');
                             });
@@ -323,8 +270,7 @@ angular
                 var $html = $('html');
                 var $body = $('body');
 
-                $scope.menuItensSidebar = AuthService
-                    .menusAcessos();
+                $scope.menuItensSidebar = APP_MENUS;
 
                 // Adjustment on route changes
                 $rootScope.$on('$stateChangeStart', function (event,

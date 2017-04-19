@@ -47,8 +47,7 @@ public class AutenticacaoController {
 	
 	Usuario usuarioLoad= userDAO.carregaUsuairoLogin(usuario.getLogin().toLowerCase());
 	System.out.println("Buscou usuario");
-	ObjectNode nodeResposta = mapper.createObjectNode();
-	
+	ObjectNode nodeResposta = mapper.createObjectNode();	
 	HttpStatus httpStatus=null;
 	
 	if(usuarioLoad == null){
@@ -56,9 +55,9 @@ public class AutenticacaoController {
 		httpStatus = HttpStatus.NOT_FOUND;
 	}else{
 		
-		if(usuarioLoad.isCredentialsNonExpired() == false){
+		if(usuarioLoad.isCredentialsNonExpired() == false || usuarioLoad.isAccountNonExpired() == false || usuarioLoad.isAccountNonLocked() == false || usuarioLoad.isEnabled() == false){
 			nodeResposta.put("descricao", "O usuario está bloqueado! Contate o Administrador.");
-			httpStatus = HttpStatus.OK;
+			httpStatus = HttpStatus.BAD_REQUEST;
 		}else{
 			
 			if(new BCryptPasswordEncoder().matches(usuario.getPassword(), usuarioLoad.getPassword()) == false){
@@ -74,7 +73,7 @@ public class AutenticacaoController {
 				}
 				
 				usuarioLoad = userDAO.atualiza(usuarioLoad);
-				httpStatus = HttpStatus.OK;
+				httpStatus = HttpStatus.BAD_REQUEST;
 			}else{
 				usuarioLoad.setErros(0);
 				usuarioLoad.setCredentialsNonExpired(true);
@@ -82,9 +81,10 @@ public class AutenticacaoController {
 				
 				System.out.println("Senha correta!");
 				httpStatus = HttpStatus.OK;
-				nodeResposta.put("descricao", "A senha está correta");
-				JsonNode node = mapper.convertValue(usuarioLoad, JsonNode.class);
-				nodeResposta.set("objeto", node);
+				//nodeResposta.put("descricao", "A senha está correta");
+				//JsonNode node = mapper.convertValue(usuarioLoad, JsonNode.class);
+				//nodeResposta.set("objeto", node);
+				return new ResponseEntity<Object>(usuarioLoad,  new HttpHeaders(), httpStatus);
 			}
 			
 		}	
