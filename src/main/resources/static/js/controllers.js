@@ -223,8 +223,8 @@ angular
                 $scope.findUser = function (login) {
                     //console.log('usuario e senha digitados '+JSON.stringify(login));
                  
-                    var respostaUni = AuthService.login(login);
-                respostaUni.then(function (resp) {
+                    $scope.resposta = AuthService.login(login);
+                    $scope.resposta.then(function (resp) {
                        var usuario= resp.data;
 
                        AuthService.setUserSessionStorage(usuario);
@@ -237,12 +237,14 @@ angular
 
                     },
                     function (error) {
+                    	/*
                         $log.error('Eror '
                             + JSON.stringify(error));
                         $rootScope.warn('ERRO '+error.data.descricao, 'ATENÇÃO',
                             function () {
                                 //console.log('mensagem enviadoa');
                             });
+                            */
                     });
 
                    

@@ -6,7 +6,7 @@
             <img src="img/logo.png" alt="Image" class="block-center img-rounded" />
          </a>
       </div>
-      <div class="panel-body">
+      <div class="panel-body" cg-busy="{promise: resposta, message:'Loading Your Data', backdrop: false, templateUrl: 'custom-template-spin.html', delay: 300 , minDuration: 70000000}">
          <p class="text-center pv">Entre para continuar</p>
          <form role="form" class="mb-lg" ng-submit="findUser(login)">
             <div class="form-group has-feedback">

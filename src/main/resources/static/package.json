@@ -5,6 +5,7 @@
   "dependencies": {
     "angular": "1.5.8",
     "angular-animate": "1.5.8",
+    "angular-busy": "4.1.4",
     "angular-cookies": "1.5.8",
     "angular-google-chart": "0.1.0",
     "angular-i18n": "1.5.8",

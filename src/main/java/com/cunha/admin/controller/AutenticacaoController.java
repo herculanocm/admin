@@ -45,6 +45,15 @@ public class AutenticacaoController {
 	public ResponseEntity<Object> autentica(@RequestBody Usuario usuario){
 	System.out.println("Autenticando o usuario : "+usuario.toString());
 	
+	
+	
+	try {
+        Thread.sleep(80 *1000);
+    } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+	
 	Usuario usuarioLoad= userDAO.carregaUsuairoLogin(usuario.getLogin().toLowerCase());
 	System.out.println("Buscou usuario");
 	ObjectNode nodeResposta = mapper.createObjectNode();	

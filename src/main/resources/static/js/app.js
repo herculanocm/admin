@@ -1,5 +1,5 @@
 angular.module('son', ['ui.router', 'oc.lazyLoad', 'ngStorage', 'ngCookies', 'ui.bootstrap', 'ui.utils.masks', 'ngAnimate',
-    'angular-loading-bar','toaster','ngTouch','angularMoment','ngSanitize', 'ngCsv','ngResource'])
+    'angular-loading-bar','toaster','ngTouch','angularMoment','ngSanitize', 'ngCsv','ngResource','cgBusy'])
     .run(['$rootScope', '$state', '$stateParams', '$window', '$location', '$uibModal', 'AuthService','APP_MENUS',
         function ($rootScope, $state, $stateParams, $window, $location, $modal, AuthService,APP_MENUS) {
 
