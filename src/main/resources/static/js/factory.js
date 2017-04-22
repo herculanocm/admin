@@ -8,6 +8,7 @@ angular.module('son')
         };
 
     }])
+
      .factory('UsuarioService', ['APP_END_POINT','$resource', function (APP_END_POINT,$resource) {
 
         return $resource(APP_END_POINT+'/api/admin/usuarios',null,
@@ -50,6 +51,10 @@ angular.module('son')
             authService.getUserSessionStorage = function () {
                 return $sessionStorage.user;
             };
+            
+            authService.getUserLocalStorage = function () {
+                return $localStorage.user;
+            };
 
             
             authService.isAuth = function () {
@@ -65,7 +70,11 @@ angular.module('son')
 
             authService.logout = function () {
                 delete $sessionStorage.user;
-                delete $sessionStorage.menuItems;
+                delete $localStorage.user;
+            };
+            
+            authService.recoverySenhaEmail = function(emailStr){
+            	return $http.post(APP_END_POINT+'/api/admin/usuarios/recovery',{email: emailStr});
             };
 
 

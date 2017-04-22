@@ -45,6 +45,17 @@ public class UserDAO {
 		
 		return false;
 	}
+	
+	public Usuario carregaUsuairoEmail(String email) {
+		String jpql = "select u from Usuario u where u.email = :email";
+		List<Usuario> users = em.createQuery(jpql,Usuario.class).setParameter("email", email).getResultList();
+		
+		if(users == null || users.size() == 0){
+			return null;
+		}else{
+			return users.get(0);
+		}
+	}
 
 	public Usuario salva(Usuario usuario) {
 		em.persist(usuario);

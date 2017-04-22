@@ -8,12 +8,14 @@
             </div>
          <span >{{item.text}}</span>
       </a>
+
    <a ui-sref="{{item.sref}}" title="{{item.text}}" ng-if="!item.heading && item.sref!='#'">
       <em ng-hide="inSubmenu" class="{{item.icon}}"></em>
       <div ng-if="item.alert" class="label label-success pull-right">{{item.alert}}
       </div>
       <span >{{item.text}}</span>
    </a>
+
    <ul ng-if="item.submenu" uib-collapse="isCollapseItem($index)" ng-init="addCollapseItem($index, item)" ng-click="$event.stopPropagation();" class="nav sidebar-subnav">
       <li class="sidebar-subnav-header">{{item.text}}</li>
       <li ng-repeat="item in item.submenu" ng-include="'sidebar-renderer.html'" ng-class="getMenuItemPropClasses(item)" ng-init="inSubmenu = true"></li>

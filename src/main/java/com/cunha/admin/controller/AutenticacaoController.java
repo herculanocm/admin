@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cunha.admin.daos.UserDAO;
 import com.cunha.admin.models.Usuario;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -40,19 +40,12 @@ public class AutenticacaoController {
 	@Autowired
 	private UserDAO userDAO;
 	
+
+	
 	@RequestMapping(value="/auth",method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Object> autentica(@RequestBody Usuario usuario){
 	System.out.println("Autenticando o usuario : "+usuario.toString());
-	
-	
-	
-	try {
-        Thread.sleep(80 *1000);
-    } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }
 	
 	Usuario usuarioLoad= userDAO.carregaUsuairoLogin(usuario.getLogin().toLowerCase());
 	System.out.println("Buscou usuario");

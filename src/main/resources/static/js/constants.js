@@ -65,15 +65,7 @@ angular.module('son')
         'mobile': 480
     })
     .constant('APP_MENUS', [
-        {
-            "_id": 6,
-            "text": "Dashboards",
-            "sref": "#",
-            "icon": "icon-speedometer",
-            "menu": true,
-            "heading": false,
-            "submenu": []
-        },
+
         {
             "_id": 1,
             "text": "Acessos",
@@ -83,26 +75,29 @@ angular.module('son')
             "heading": false,
             "submenu": [
                 {
-                    "_id": 11,
-                    "text": "Criar Usuario",
-                    "sref": "app.createuser"
-                },
-                {
-                    "_id": 12,
-                    "text": "Alterar Usuario",
+                	"text": "Alterar Usuario",
                     "sref": "app.alteruser"
                 },
                 {
-                    "_id": 13,
+        
                     "text": "Criar Perfil",
                     "sref": "app.criarperfil"
                 },
                 {
-                    "_id": 14,
+           
                     "text": "Alterar Perfil",
                     "sref": "app.alterperfil"
                 }
             ]
+        },
+        {
+            "_id": 6,
+            "text": "Dashboards",
+            "sref": "#",
+            "icon": "icon-speedometer",
+            "menu": true,
+            "heading": false,
+            "submenu": []
         }
         ])
 ;

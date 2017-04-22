@@ -15348,3 +15348,8 @@ flatdoc [role~="flatdoc-content"] > h3 {
 .visibility {
   visibility:hidden;
 }
+ .fetch-random-result {
+			  overflow: auto;
+			  height: 300px;
+			  margin-top: 1em;
+		  }

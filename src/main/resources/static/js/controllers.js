@@ -37,7 +37,7 @@ angular
                 var thBar;
                 $rootScope.$on('$stateChangeStart', function (event,
                                                               toState, toParams, fromState, fromParams) {
-                    //console.log('Alterando status Status Atual:' + fromState.name + '        Status Final:' + toState.name);
+                    console.log('Alterando status Status Atual:' + fromState.name + '        Status Final:' + toState.name);
 
                     if ($('.wrapper > section').length) {
                         thBar = $timeout(function () {
@@ -47,7 +47,7 @@ angular
                     }
 
                     
-                     if (!AuthService.isAuth()) {
+                     if (!AuthService.isAuth() && toState.name != "page.recover") {
 
                      //console.log('Usuario não esta logado');
                      //$location.path('/page/login');
@@ -216,35 +216,36 @@ angular
                 console.log('iniciou o controler login');
 
                 AuthService.logout();
+                $scope.login = AuthService.getUserLocalStorage();
 
                 /*
                  Metodo de Login
                  */
-                $scope.findUser = function (login) {
+                $scope.findUser = function (loginForm) {
                     //console.log('usuario e senha digitados '+JSON.stringify(login));
                  
-                    $scope.resposta = AuthService.login(login);
-                    $scope.resposta.then(function (resp) {
+                    var respostaUni = AuthService.login(loginForm);
+                respostaUni.then(function (resp) {
                        var usuario= resp.data;
 
                        AuthService.setUserSessionStorage(usuario);
                        
-                       if(typeof(login.lembrar) != "undefined" && login.lembrar == true){
-                    	   AuthService.setUserLocalStorage(usuario);
+                       if(typeof(loginForm.lembrar) != "undefined" && loginForm.lembrar == true){
+                    	   AuthService.setUserLocalStorage(loginForm);
+                       }else{
+                    	   AuthService.setUserLocalStorage({});
                        }
                        
                        $state.go('app.dashboard');
 
                     },
                     function (error) {
-                    	/*
                         $log.error('Eror '
                             + JSON.stringify(error));
                         $rootScope.warn('ERRO '+error.data.descricao, 'ATENÇÃO',
                             function () {
                                 //console.log('mensagem enviadoa');
                             });
-                            */
                     });
 
                    
@@ -602,36 +603,24 @@ angular
             '$log',
             '$state',
             '$stateParams',
+         
             function ($scope, AuthService, $window, $rootScope,
                       $log, $state, $stateParams) {
-                $scope.usuarioRecover = AuthService
-                    .getUserSessionStorage();
-                //console.log('iniciou o controler de alteração de recovery');
+            	
 
-                if (!$scope.usuarioRecover) {
-                    $state.go('page.login');
-                }
+               
 
-                $scope.resetSenha = function (userSenha) {
-                    $scope.usuarioRecover.desSenha = userSenha.senha2;
-                    var resposta = AuthService
-                        .setResetSenha($scope.usuarioRecover);
+                $scope.resetSenha = function (email) {
+                	console.log('email : '+email);
+                    
+                    var resposta = AuthService.recoverySenhaEmail(email);
                     resposta.then(function (resp) {
-                        var resultado = resp.data;
-
-                        if (resultado.type) {
-
-                            AuthService.alterPass(userSenha);
-                            $state.go('app.wellcome');
-                        } else {
-                            $rootScope.warn('' + resultado.des,
-                                'ATENÇÃO', function () {
-                                    //console.log('mensagem enviadoa');
-                                });
-                        }
-
+                    	
+                    	$rootScope.alert(''+resp.data.descricao,'RESET DE SENHA',function(){$state.go('page.login');});
+                            
                     }, function (error) {
-
+                    	$log.error('erro : '+JSON.stringify(error));
+                    	$rootScope.warn('' + error.data.descricao,'ATENÇÃO', function () {});
                     });
                 };
 

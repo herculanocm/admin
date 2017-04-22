@@ -8,7 +8,10 @@ angular.module('son')
         $httpProvider.interceptors.push("timesInterceptor");
 
 
-    }]);
+    }])
+    
+
+    ;
 
 
 
