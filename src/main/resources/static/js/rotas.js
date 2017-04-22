@@ -42,31 +42,6 @@ angular.module('son')
                     templateUrl: basepath('profile.html'),
                     controller: 'ProfileController'
                 })
-
-                .state('app.createuser', {
-                    url: '/createuser',
-                    title: 'Criando Usuário',
-                    controller: 'CreateUserController',
-                    templateUrl: basepath('form-create-user.html')
-                })
-                .state('app.alteruser', {
-                    url: '/alteruser',
-                    title: 'Alterar Usuário',
-                    controller: 'AlterUserController',
-                    templateUrl: basepath('form-alter-user.html')
-                })
-                .state('app.alterperfil', {
-                    url: '/alterperfil',
-                    title: 'Alterar Perfil',
-                    controller: 'AlterPerfilController',
-                    templateUrl: basepath('form-alter-perfil.html')
-                })
-                .state('app.criarperfil', {
-                    url: '/criarperfil',
-                    title: 'Criar Perfil',
-                    controller: 'CriarPerfilController',
-                    templateUrl: basepath('form-create-perfil.html')
-                })
                 .state('app.404', {
                     url: '/404',
                     title: '404',
@@ -86,123 +61,27 @@ angular.module('son')
                     templateUrl: basepath('wellcome.html')
 
                 })
-                .state('app.createpessoa', {
-                    url: '/createpessoa',
-                    title: 'Criando Pessoa',
-                    controller: 'CreatePessoaController',
-                    templateUrl: basepath('form-create-pessoa.html'),
-                    params: {pessoa: null}
-
-                })
-                .state('app.buscarpessoa', {
-                    url: '/buscarpessoa',
-                    title: 'Buscar Pessoa',
-                    controller: 'BuscarPessoaController',
-
-                    templateUrl: basepath('form-buscar-pessoa.html')
-
-                })
-                .state('app.unidade', {
-                    url: '/unidade',
-                    title: 'Unidade',
-                    controller: 'UnidadeController',
-                    templateUrl: basepath('unidade.html')
-                })
-                .state('app.createitem', {
-                    url: '/createitem',
-                    title: 'Criar Item',
-                    controller: 'CreateItemController',
-                    templateUrl: basepath('create-item.html')
-                })
-                .state('app.veiculos', {
-                    url: '/veiculos',
-                    title: 'Veiculos',
-                    controller: 'VeiculoController',
-                    templateUrl: basepath('veiculo.html')
-                })
-                .state('app.movimentacao', {
-                    url: '/movimentacao',
-                    title: 'Movimentacao',
-                    controller: 'MovimentacaoController',
-                    templateUrl: basepath('movimentacao.html'),
-                    params: {movimento: null}
-                })
-                .state('app.listamovimentacoes', {
-                    url: '/listamovimentacoes',
-                    title: 'Listar Movimentações',
-                    controller: 'ListaMovController',
-                    templateUrl: basepath('listamovimentacoes.html')
-                })
-                .state('app.motoristas', {
-                    url: '/motoristas',
-                    title: 'Motoristas',
-                    controller: 'MotoristaController',
-                    templateUrl: basepath('motorista.html')
-                })
-                .state('app.conferencia', {
-                    url: '/conferencia',
-                    title: 'Conferencia',
-                    controller: 'ConferenciaController',
-                    templateUrl: basepath('conferencia.html')
-                })
-                .state('app.ruas', {
-                    url: '/ruas',
-                    title: 'Ruas',
-                    controller: 'RuasController',
-                    templateUrl: basepath('ruas.html')
-                })
-                .state('app.listaconferencia', {
-                    url: '/listaconferencias',
-                    title: 'Lista Conferências',
-                    controller: 'ListaconfController',
-                    templateUrl: basepath('listaconferencia.html')
-                })
-                //relatorios
-
-                .state('app.posicaoitem', {
-                    url: '/posicaoitem',
-                    title: 'Posição Item',
-                    controller: 'RelPosicaoItemController',
-                    templateUrl: basepath('posicaoitem.html')
-                })
-
-                .state('app.auditoriaitem', {
-                    url: '/auditoriaitem',
-                    title: 'Auditoria Item',
-                    controller: 'RelAuditoriaItemController',
-                    templateUrl: basepath('auditoriaitem.html')
-                })
-                .state('app.vasilhames', {
-                    url: '/vasilhames',
-                    title: 'Vasilhames',
-                    controller: 'VasilhameController',
-                    templateUrl: basepath('vasilhame.html')
-                })
-                .state('app.posicaovasilhame', {
-                    url: '/posicaovasilhame',
-                    title: 'Posição Vasilhame',
-                    controller: 'RelPosVasilhameController',
-                    templateUrl: basepath('posvasilhame.html')
-                })
-                .state('app.inventario', {
-                    url: '/inventario',
-                    title: 'Inventário',
-                    controller: 'InventarioController',
-                    templateUrl: basepath('inventario.html')
-                })
-                .state('app.relatoriomovimento', {
-                    url: '/relatoriomovimento',
-                    title: 'Relatório Movimento',
-                    controller: 'RelMovimentoController',
-                    templateUrl: basepath('relatorio-movimento.html')
-                })
-
-                //app.posicaovasilhame
-                // Novos incluidosapp.motoristas
+               
+                
+                // Sistema
                 // -----------------------------------
 
+                 .state('app.usuario', {
+                    url: '/usuario',
+                    title: 'Usuario',
+                    controller: 'UsuarioController',
+                    templateUrl: basepath('usuario.html')
 
-                //app.createpessoa
+                })
+                 .state('app.roles', {
+                    url: '/roles',
+                    title: 'Roles',
+                    controller: 'RolesController',
+                    templateUrl: basepath('roles.html')
+
+                })
+
+                
                 // Single Page Routes
                 // -----------------------------------
                 .state('page', {

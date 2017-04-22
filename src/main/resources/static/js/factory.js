@@ -26,7 +26,9 @@ angular.module('son')
 
             var authService = {};
             
-           
+           authService.setUsuarioProfile = function (usuarioProfile) {
+               return $http.put(APP_END_POINT+'/api/admin/usuarios/atualiza', usuarioProfile);
+           };
             
             authService.login = function (credentials) {
                 //return $http.post(APP_END_POINT + '/api/admin/autenticacao/auth', credentials);
@@ -35,7 +37,27 @@ angular.module('son')
             };
             
            
-            
+            authService.formataUsuario = function (usuarioAFormatar) {
+
+                var usuarioSession ={
+                    login: usuarioAFormatar.login,
+                    password: usuarioAFormatar.password,
+                    name: usuarioAFormatar.name,
+                    email: usuarioAFormatar.email,
+                    erros: usuarioAFormatar.erros,
+                    roles: [],
+                    accountNonExpired: usuarioAFormatar.accountNonExpired,
+                    accountNonLocked: usuarioAFormatar.accountNonLocked,
+                    credentialsNonExpired: usuarioAFormatar.credentialsNonExpired,
+                    enabled: usuarioAFormatar.enabled
+                };
+
+                for(var i=0;i<usuarioAFormatar.roles.length; i++){
+                    usuarioSession.roles.push(usuarioAFormatar.roles[i].authority);
+                }
+
+                return usuarioSession;
+            };
 
             authService.setUserSessionStorage = function (user) {
                 user.block = false;

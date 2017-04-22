@@ -25,9 +25,16 @@ import com.cunha.admin.models.ApiError;
 
 
 
-@ControllerAdvice
+
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
+	
+	
+	/*
+	 * @ControllerAdvice
+	 * (non-Javadoc)
+	 * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler#handleMethodArgumentNotValid(org.springframework.web.bind.MethodArgumentNotValidException, org.springframework.http.HttpHeaders, org.springframework.http.HttpStatus, org.springframework.web.context.request.WebRequest)
+	 */
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
 	  MethodArgumentNotValidException ex, 

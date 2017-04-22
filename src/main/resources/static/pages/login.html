@@ -6,7 +6,7 @@
             <img src="img/logo.png" alt="Image" class="block-center img-rounded" />
          </a>
       </div>
-      <div class="panel-body well well-lg bs-loading-container" bs-loading-overlay bs-loading-overlay-delay="3000"">
+      <div class="panel-body well well-lg bs-loading-container" cg-busy="{promise: respostaLogin ,message: 'Conversando com o servidor',templateUrl: 'template-angular-busy.html', delay: 300, minDuration: 700}">
          <p class="text-center pv">Entre para continuar</p>
          <form role="form" class="mb-lg" ng-submit="findUser(login)">
             <div class="form-group has-feedback">

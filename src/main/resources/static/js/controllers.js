@@ -24,15 +24,14 @@ angular
                 $scope.isCollapsedHorizontal = false;
                 $scope.user = AuthService.getUserSessionStorage();
 
-                
 
-                 if (!$scope.user || $scope.user == null || $scope.user == undefined) {
-                 $state.go('page.login', '', {notify: false}).then(function () {
-                	 console.log('foi para o login');
-                 $rootScope.$broadcast('$stateChangeSuccess');
-                 });
-                 }
-                 
+                if (!$scope.user || $scope.user == null || $scope.user == undefined) {
+                    $state.go('page.login', '', {notify: false}).then(function () {
+                        console.log('foi para o login');
+                        $rootScope.$broadcast('$stateChangeSuccess');
+                    });
+                }
+
 
                 var thBar;
                 $rootScope.$on('$stateChangeStart', function (event,
@@ -46,30 +45,30 @@ angular
                         }, 0); // sets a latency Threshold
                     }
 
-                    
-                     if (!AuthService.isAuth() && toState.name != "page.recover") {
 
-                     //console.log('Usuario não esta logado');
-                     //$location.path('/page/login');
-                     event.preventDefault();
+                    if (!AuthService.isAuth() && toState.name != "page.recover") {
 
-                     $state.go('page.login', toParams, {notify: false}).then(function () {
-                     $rootScope.$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
-                     });
+                        //console.log('Usuario não esta logado');
+                        //$location.path('/page/login');
+                        event.preventDefault();
 
-                     } else {
-                     return;
-                     }
-                     
-                     /*
-                      * else if (!AuthService.isMenuState(toState.name) && AuthService.isEstadosPadroes(toState.name)) {
+                        $state.go('page.login', toParams, {notify: false}).then(function () {
+                            $rootScope.$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
+                        });
+
+                    } else {
+                        return;
+                    }
+
+                    /*
+                     * else if (!AuthService.isMenuState(toState.name) && AuthService.isEstadosPadroes(toState.name)) {
                      event.preventDefault();
                      $state.go('app.nroute', toParams, {notify: false}).then(function () {
                      $rootScope.$broadcast('$stateChangeSuccess', toState, toParams, fromState, fromParams);
                      });
 
                      } 
-                      * */
+                     * */
                 });
 
                 $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState,
@@ -161,7 +160,7 @@ angular
             '$log',
             '$http',
             '$state',
-            function ($scope, $rootScope, $log, $http,$state) {
+            function ($scope, $rootScope, $log, $http, $state) {
 
                 $scope.chartVendedores = {};
                 $scope.chartVendedores.type = 'BarChart';
@@ -194,64 +193,12 @@ angular
                  */
 
                 $scope.enviarDados = function () {
-                	console.log('enviando dados');
-                	$state.go('app.veiculos');
+                    console.log('enviando dados');
+                    $state.go('app.veiculos');
                 };
 
             }])
-    .controller(
-        'LoginController',
-        [
-            '$scope',
-            'AuthService',
-            '$window',
-            '$rootScope',
-            '$log',
-            '$state',
-            '$localStorage',
-            '$resource',
-            'UsuarioService',
-            function ($scope, AuthService, $window, $rootScope,
-                      $log, $state, $localStorage,$resource,UsuarioService) {
-                console.log('iniciou o controler login');
 
-                AuthService.logout();
-                $scope.login = AuthService.getUserLocalStorage();
-
-                /*
-                 Metodo de Login
-                 */
-                $scope.findUser = function (loginForm) {
-                    //console.log('usuario e senha digitados '+JSON.stringify(login));
-                 
-                    var respostaUni = AuthService.login(loginForm);
-                respostaUni.then(function (resp) {
-                       var usuario= resp.data;
-
-                       AuthService.setUserSessionStorage(usuario);
-                       
-                       if(typeof(loginForm.lembrar) != "undefined" && loginForm.lembrar == true){
-                    	   AuthService.setUserLocalStorage(loginForm);
-                       }else{
-                    	   AuthService.setUserLocalStorage({});
-                       }
-                       
-                       $state.go('app.dashboard');
-
-                    },
-                    function (error) {
-                        $log.error('Eror '
-                            + JSON.stringify(error));
-                        $rootScope.warn('ERRO '+error.data.descricao, 'ATENÇÃO',
-                            function () {
-                                //console.log('mensagem enviadoa');
-                            });
-                    });
-
-                   
-                };
-
-            }])
     .controller(
         'SidebarController',
         [
@@ -428,72 +375,6 @@ angular
 
     }])
     .controller(
-        'ProfileController',
-        [
-            '$scope',
-            'AuthService',
-            '$window',
-            '$rootScope',
-            '$log',
-            '$state',
-            'APP_END_POINT',
-            function ($scope, AuthService, $window, $rootScope,
-                      $log, $state, APP_END_POINT) {
-                //console.log('iniciou o controler de profile');
-                var usuarioRoot = AuthService
-                    .getUserSessionStorage();
-                $scope.usuarioProfile = usuarioRoot;
-
-                //$scope.usuarioProfile.desSenha1=usuarioRoot.desSenha;
-                //$scope.usuarioProfile.desSenha2=usuarioRoot.desSenha;
-                $scope.usuarioProfile.nome2 = usuarioRoot.nome;
-                $scope.usuarioProfile.desEmail2 = usuarioRoot.desEmail;
-
-                $scope.addUsuarioProfile = function (usuarioProfile) {
-                    var resposta = AuthService
-                        .setUsuarioProfile(usuarioProfile);
-                    resposta
-                        .then(
-                            function (resp) {
-                                var resultado = resp.data;
-                                var user = resultado.data;
-                                ////console.log(JSON.stringify(resultado));
-
-                                if (resultado.type) {
-
-                                    AuthService
-                                        .setUserSessionStorage(user);
-
-                                    $rootScope
-                                        .alert(
-                                            ''
-                                            + resultado.des,
-                                            'OK',
-                                            function () {
-                                                //console.log('mensagem enviadoa');
-                                            });
-
-                                } else {
-                                    //AuthService.setUserLocalStorage(null);
-                                    $rootScope
-                                        .warn(
-                                            ''
-                                            + resultado.des,
-                                            'ATENÇÃO',
-                                            function () {
-                                                //console.log('mensagem enviadoa');
-                                            });
-                                }
-
-                            },
-                            function (error) {
-                                $log.error('Eror ' + error);
-                            });
-
-                };
-
-            }])
-    .controller(
         'WellcomeController',
         [
             '$scope',
@@ -603,24 +484,25 @@ angular
             '$log',
             '$state',
             '$stateParams',
-         
+
             function ($scope, AuthService, $window, $rootScope,
                       $log, $state, $stateParams) {
-            	
 
-               
 
                 $scope.resetSenha = function (email) {
-                	console.log('email : '+email);
-                    
-                    var resposta = AuthService.recoverySenhaEmail(email);
-                    resposta.then(function (resp) {
-                    	
-                    	$rootScope.alert(''+resp.data.descricao,'RESET DE SENHA',function(){$state.go('page.login');});
-                            
+                    console.log('email : ' + email);
+
+                    $scope.respostaRecovery = AuthService.recoverySenhaEmail(email);
+                    $scope.respostaRecovery.then(function (resp) {
+
+                        $rootScope.alert('' + resp.data.descricao, 'RESET DE SENHA', function () {
+                            $state.go('page.login');
+                        });
+
                     }, function (error) {
-                    	$log.error('erro : '+JSON.stringify(error));
-                    	$rootScope.warn('' + error.data.descricao,'ATENÇÃO', function () {});
+                        $log.error('erro : ' + JSON.stringify(error));
+                        $rootScope.warn('' + error.data.descricao, 'ATENÇÃO', function () {
+                        });
                     });
                 };
 
@@ -680,11 +562,154 @@ angular
 
             }])
 
+    .controller(
+        'LoginController',
+        [
+            '$scope',
+            'AuthService',
+            '$window',
+            '$rootScope',
+            '$log',
+            '$state',
+            '$localStorage',
+            '$resource',
+            'UsuarioService',
+            function ($scope, AuthService, $window, $rootScope,
+                      $log, $state, $localStorage, $resource, UsuarioService) {
+                console.log('iniciou o controler login');
+
+                AuthService.logout();
+                $scope.login = AuthService.getUserLocalStorage();
+
+                /*
+                 Metodo de Login
+                 */
+                $scope.findUser = function (loginForm) {
+                    //console.log('usuario e senha digitados '+JSON.stringify(login));
+
+                    $scope.respostaLogin = AuthService.login(loginForm);
+                    $scope.respostaLogin.then(function (resp) {
+                            var usuarioServidor = resp.data;
+
+                            var usuarioSession = AuthService.formataUsuario(usuarioServidor);
+
+
+
+
+                            AuthService.setUserSessionStorage(usuarioSession);
+
+                            if (typeof(loginForm.lembrar) != "undefined" && loginForm.lembrar == true) {
+                                AuthService.setUserLocalStorage(loginForm);
+                            } else {
+                                AuthService.setUserLocalStorage({});
+                            }
+
+                            $state.go('app.dashboard');
+
+                        },
+                        function (error) {
+                            $log.error('Eror '
+                                + JSON.stringify(error));
+                            $rootScope.warn('ERRO ' + error.data.descricao, 'ATENÇÃO',
+                                function () {
+                                    //console.log('mensagem enviadoa');
+                                });
+                        });
+
+
+                };
+
+            }])
+    .controller('UsuarioController', ['$scope', '$log', '$state', 'toaster', '$rootScope',
+        function ($scope, $log, $state, toaster, $rootScope) {
+
+
+        }])
+    .controller('RolesController', ['$scope', '$log', '$state', 'toaster', '$rootScope',
+        function ($scope, $log, $state, toaster, $rootScope) {
+
+
+        }])
+    .controller(
+        'ProfileController',
+        [
+            '$scope',
+            'AuthService',
+            '$window',
+            '$rootScope',
+            '$log',
+            '$state',
+            'APP_END_POINT',
+            'toaster',
+            'Upload',
+            'APP_END_POINT',
+            function ($scope, AuthService, $window, $rootScope, $log, $state, APP_END_POINT,toaster,Upload, APP_END_POINT) {
+                $scope.file ={};
+                $scope.usuarioProfile = angular.copy(AuthService.getUserSessionStorage());
+                console.log('iniciou o controler de profile '+JSON.stringify($scope.usuarioProfile));
+
+                //toaster.pop('sucess', 'Perfil', 'Perfil incluido com sucesso!');
+
+
+                $scope.submit = function() {
+                    if ($scope.form.file.$valid && $scope.file) {
+                        $scope.upload($scope.file);
+                    }
+                };
+
+                // upload on file select or drop
+                $scope.upload = function (file) {
+                    Upload.upload({
+                        url: APP_END_POINT+'/api/admin/usuarios/upload',
+                        data: {'file': file, 'name': $scope.usuarioProfile.name}
+                    }).then(function (resp) {
+                        console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+                    }, function (resp) {
+                        console.log('Error status: ' + resp.status);
+                    }, function (evt) {
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                    });
+                };
+
+
+
+                $scope.addUsuarioProfile = function (usuarioProfileForm) {
+                    var resposta = AuthService.setUsuarioProfile(usuarioProfileForm);
+                    resposta.then(function (resp) {
+                        var usuarioProfile = resp.data;
+
+                        console.log('resp '+JSON.stringify(usuarioProfile));
+
+
+                        AuthService.setUserSessionStorage(AuthService.formataUsuario(usuarioProfile));
+                        $scope.usuarioProfile = usuarioProfile;
+
+                        toaster.pop('sucess', 'Perfil', 'Perfil alterado com sucesso!');
+
+
+
+
+                        console.log('novo usuario '+JSON.stringify(usuarioProfile));
+
+
+                    }, function (error) {
+                        $log.error('Eror ' + error);
+                        $rootScope.warn('ERRO ' + error.data.descricao, 'ATENÇÃO',
+                            function () {
+                                //console.log('mensagem enviadoa');
+                            });
+                    });
+
+                };   
+                
+                
+            }])
 
 ;
 
 /*
- .controller('RelMovimentoController', ['$scope', '$log', '$state', 'toaster', '$rootScope',
+ .controller('RolesController', ['$scope', '$log', '$state', 'toaster', '$rootScope',
  function ($scope, $log, $state, toaster, $rootScope) {
 
 

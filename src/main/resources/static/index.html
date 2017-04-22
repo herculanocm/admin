@@ -10,6 +10,9 @@
 
     <link rel="stylesheet" href="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css"  type='text/css' media='all' />
     <link rel="stylesheet" href="vendor/toaster/toaster.css"  type='text/css' media='all' />
+    
+    <link rel="stylesheet" href="node_modules/angular-busy/dist/angular-busy.min.css"  type='text/css' media='all' />
+ 
 
     <link rel="stylesheet" href="css/app.css" type='text/css' media='all' />
     <link rel="stylesheet" href="css/theme-f.css" type='text/css' media='all' />
@@ -60,7 +63,10 @@
 <script src="node_modules/ng-csv/src/ng-csv/services/csv-service.js"></script>
 
 <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+<script src="node_modules/angular-busy/dist/angular-busy.min.js"></script>
 
+<script src="node_modules/ng-file-upload/dist/ng-file-upload-all.min.js"></script>
+<script src="node_modules/ng-file-upload/dist/FileAPI.min.js"></script>
 
 
 <script src="js/app.js"></script>
@@ -74,7 +80,15 @@
 <script src="js/controllers.js"></script>
 <script src="js/jqueryAux.js"></script>
 
+<script type="text/ng-template" id="template-angular-busy.html">
 
+  <div style="background-image:url('./img/spin.gif');background-position:50% 20px;background-repeat:no-repeat">
+
+	<div style="text-align:center;font-size:26px;position:absolute;top:100px;width:100%;text-shadow:1px 1px 2px white, -1px -1px 2px white,-4px 4px 4px white,-4px 4px 4px white">{{$message}}</div>
+
+</div>
+
+</script>
 
 
 </body>

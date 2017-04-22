@@ -47,6 +47,8 @@ public class AutenticacaoController {
 	public ResponseEntity<Object> autentica(@RequestBody Usuario usuario){
 	System.out.println("Autenticando o usuario : "+usuario.toString());
 	
+	
+	
 	Usuario usuarioLoad= userDAO.carregaUsuairoLogin(usuario.getLogin().toLowerCase());
 	System.out.println("Buscou usuario");
 	ObjectNode nodeResposta = mapper.createObjectNode();	

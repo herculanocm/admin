@@ -1,4 +1,4 @@
-package com.cunha.admin.models;
+package com.cunha.admin.aux;
 
 public class EmailAux {
 

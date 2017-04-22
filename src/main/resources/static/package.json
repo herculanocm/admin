@@ -5,6 +5,7 @@
   "dependencies": {
     "angular": "1.5.8",
     "angular-animate": "1.5.8",
+    "angular-busy": "4.1.4",
     "angular-cookies": "1.5.8",
     "angular-google-chart": "0.1.0",
     "angular-i18n": "1.5.8",
@@ -23,7 +24,7 @@
     "jquery": "3.1.1",
     "moment": "2.17.1",
     "ng-csv": "0.3.6",
-    "ng-file-upload": "12.2.12",
+    "ng-file-upload": "^12.2.13",
     "ng-mask": "3.1.1",
     "ngstorage": "0.3.11",
     "oclazyload": "1.0.9"

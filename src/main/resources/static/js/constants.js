@@ -75,18 +75,13 @@ angular.module('son')
             "heading": false,
             "submenu": [
                 {
-                	"text": "Alterar Usuario",
-                    "sref": "app.alteruser"
+                	"text": "Usuario",
+                    "sref": "app.usuario"
                 },
                 {
         
-                    "text": "Criar Perfil",
-                    "sref": "app.criarperfil"
-                },
-                {
-           
-                    "text": "Alterar Perfil",
-                    "sref": "app.alterperfil"
+                    "text": "Roles",
+                    "sref": "app.roles"
                 }
             ]
         },
