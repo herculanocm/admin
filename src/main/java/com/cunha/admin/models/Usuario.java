@@ -1,28 +1,22 @@
 package com.cunha.admin.models;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
   
 @Entity
 public class Usuario implements UserDetails {
 
-	public int getErros() {
-		return erros;
-	}
 
-	public void setErros(int erros) {
-		this.erros = erros;
-	}
 
 	/**
 	 * 
@@ -49,6 +43,13 @@ public class Usuario implements UserDetails {
 	@Column(name="erros")
 	private int erros;
 	
+	@Column(name="img")
+	@Lob
+	private byte[] img;
+	
+	@Column(name="img_ext")
+	private String imgExt;
+	
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Role> roles = new ArrayList<>();
 	
@@ -65,9 +66,15 @@ public class Usuario implements UserDetails {
 	private boolean isEnabled;
 	
 	
+	public int getErros() {
+		return erros;
+	}
+
+	public void setErros(int erros) {
+		this.erros = erros;
+	}
 	
-	  
-	
+
 	public String getLogin() {
 		return login;
 	}
@@ -146,10 +153,14 @@ public class Usuario implements UserDetails {
 		this.email = email;
 	}
 	
-	
-	
+	public byte[] getImg() {
+		return img;
+	}
 
-	
+	public void setImg(byte[] img) {
+		this.img = img;
+	}
+
 	public void setAccountNonExpired(boolean isAccountNonExpired) {
 		this.isAccountNonExpired = isAccountNonExpired;
 	}
@@ -165,14 +176,27 @@ public class Usuario implements UserDetails {
 	public void setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
+	
+	
+
+	public String getImgExt() {
+		return imgExt;
+	}
+
+	public void setImgExt(String imgExt) {
+		this.imgExt = imgExt;
+	}
 
 	@Override
 	public String toString() {
 		return "Usuario [login=" + login + ", password=" + password + ", name=" + name + ", email=" + email + ", erros="
-				+ erros + ", roles=" + roles + ", isAccountNonExpired=" + isAccountNonExpired + ", isAccountNonLocked="
-				+ isAccountNonLocked + ", isCredentialsNonExpired=" + isCredentialsNonExpired + ", isEnabled="
-				+ isEnabled + "]";
+				+ erros + ", img=" + Arrays.toString(img) + ", imgExt=" + imgExt + ", roles=" + roles
+				+ ", isAccountNonExpired=" + isAccountNonExpired + ", isAccountNonLocked=" + isAccountNonLocked
+				+ ", isCredentialsNonExpired=" + isCredentialsNonExpired + ", isEnabled=" + isEnabled + "]";
 	}
+
+	
+
 
 
 	

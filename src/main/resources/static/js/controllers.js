@@ -675,31 +675,20 @@ angular
 
 
                 $scope.addUsuarioProfile = function (usuarioProfileForm) {
-                    var resposta = AuthService.setUsuarioProfile(usuarioProfileForm);
+
+                    var resposta = AuthService.atualizaProfileUsuario(usuarioProfileForm, usuarioProfileForm.img);
+
                     resposta.then(function (resp) {
-                        var usuarioProfile = resp.data;
-
-                        console.log('resp '+JSON.stringify(usuarioProfile));
-
-
-                        AuthService.setUserSessionStorage(AuthService.formataUsuario(usuarioProfile));
-                        $scope.usuarioProfile = usuarioProfile;
-
+                        console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
                         toaster.pop('sucess', 'Perfil', 'Perfil alterado com sucesso!');
-
-
-
-
-                        console.log('novo usuario '+JSON.stringify(usuarioProfile));
-
-
-                    }, function (error) {
-                        $log.error('Eror ' + error);
-                        $rootScope.warn('ERRO ' + error.data.descricao, 'ATENÇÃO',
-                            function () {
-                                //console.log('mensagem enviadoa');
-                            });
+                    }, function (resp) {
+                        console.log('Error status: ' + resp.status);
+                        $log.error('Eror ' + resp.status);
+                    }, function (evt) {
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                     });
+
 
                 };   
                 

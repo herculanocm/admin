@@ -128,7 +128,7 @@ public class UsuarioController {
 	}
 	
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value="/lista", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Object> lista() {
 		List<Usuario> listaUsuarios = userDAO.listaTodos();
@@ -173,10 +173,12 @@ public class UsuarioController {
 
 	}
 
+
+	
 	
 	@RequestMapping(value="/atualiza",method = RequestMethod.PUT)
 	@ResponseBody
-	public ResponseEntity<Object> atualiza(@RequestBody Usuario usuario) {
+	public ResponseEntity<Object> atualiza(Usuario usuario, MultipartFile file) {
 		System.out.println("Salvando o usuario : " + usuario.toString());
 		
 
@@ -184,7 +186,10 @@ public class UsuarioController {
 		HttpStatus httpStatus = null;
 		ObjectNode nodeResposta = mapper.createObjectNode();
 		
-		
+		if (!file.isEmpty()) {
+        	System.out.println("file não e vazio");  
+        	
+		}
 		
 		Usuario usuarioLoad= userDAO.carregaUsuairoLogin(usuario.getLogin().toLowerCase());
 		

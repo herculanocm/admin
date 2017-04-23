@@ -9,37 +9,47 @@ angular.module('son')
 
     }])
 
-     .factory('UsuarioService', ['APP_END_POINT','$resource', function (APP_END_POINT,$resource) {
+    .factory('UsuarioService', ['APP_END_POINT', '$resource', function (APP_END_POINT, $resource) {
 
-        return $resource(APP_END_POINT+'/api/admin/usuarios',null,
-        		{ 'get':    {method:'GET'},
-        	  'save':   {method:'POST'},
-        	  'query':  {method:'GET', isArray:true},
-        	  'remove': {method:'DELETE'},
-        	  'delete': {method:'DELETE'} }		
-        
+        return $resource(APP_END_POINT + '/api/admin/usuarios', null,
+            {
+                'get': {method: 'GET'},
+                'save': {method: 'POST'},
+                'query': {method: 'GET', isArray: true},
+                'remove': {method: 'DELETE'},
+                'delete': {method: 'DELETE'}
+            }
         );
 
     }])
-    .factory('AuthService', ['APP_END_POINT', '$http', '$localStorage', '$sessionStorage', '$location', '$rootScope', '$state', 'APP_MENUS',
-        function (APP_END_POINT, $http, $localStorage, $sessionStorage, $location, $rootScope, $state, APP_MENUS) {
+    .factory('AuthService', ['APP_END_POINT', '$http', '$localStorage', '$sessionStorage', '$location', '$rootScope', '$state', 'APP_MENUS', 'Upload',
+        function (APP_END_POINT, $http, $localStorage, $sessionStorage, $location, $rootScope, $state, APP_MENUS, Upload) {
 
             var authService = {};
-            
-           authService.setUsuarioProfile = function (usuarioProfile) {
-               return $http.put(APP_END_POINT+'/api/admin/usuarios/atualiza', usuarioProfile);
-           };
-            
+
+
+            authService.atualizaProfileUsuario = function (usuario, file) {
+                return Upload.upload({
+                    url: APP_END_POINT + '/api/admin/usuarios/upload',
+                    data: {'file': file, 'usuario': usuario}
+                });
+
+            };
+
+            authService.setUsuarioProfile = function (usuarioProfile) {
+                return $http.put(APP_END_POINT + '/api/admin/usuarios/atualiza', usuarioProfile);
+            };
+
             authService.login = function (credentials) {
                 //return $http.post(APP_END_POINT + '/api/admin/autenticacao/auth', credentials);
-                
-                return $http.post(APP_END_POINT+'/api/admin/autenticacao/auth', credentials);
+
+                return $http.post(APP_END_POINT + '/api/admin/autenticacao/auth', credentials);
             };
-            
-           
+
+
             authService.formataUsuario = function (usuarioAFormatar) {
 
-                var usuarioSession ={
+                var usuarioSession = {
                     login: usuarioAFormatar.login,
                     password: usuarioAFormatar.password,
                     name: usuarioAFormatar.name,
@@ -50,10 +60,11 @@ angular.module('son')
                     accountNonLocked: usuarioAFormatar.accountNonLocked,
                     credentialsNonExpired: usuarioAFormatar.credentialsNonExpired,
                     enabled: usuarioAFormatar.enabled,
-                    picture: './img/profile/'+usuarioAFormatar.login+'.jpg'
+                    img: usuarioAFormatar.img,
+                    picture: './img/profile/' + usuarioAFormatar.login + '.jpg'
                 };
 
-                for(var i=0;i<usuarioAFormatar.roles.length; i++){
+                for (var i = 0; i < usuarioAFormatar.roles.length; i++) {
                     usuarioSession.roles.push(usuarioAFormatar.roles[i].authority);
                 }
 
@@ -64,22 +75,21 @@ angular.module('son')
                 user.block = false;
                 $sessionStorage.user = user;
             };
-            
+
             authService.setUserLocalStorage = function (user) {
                 $localStorage.user = user;
             };
 
-    
 
             authService.getUserSessionStorage = function () {
                 return $sessionStorage.user;
             };
-            
+
             authService.getUserLocalStorage = function () {
                 return $localStorage.user;
             };
 
-            
+
             authService.isAuth = function () {
                 if (typeof($sessionStorage.user) != "undefined" && $sessionStorage.user != null && typeof($sessionStorage.user.login) != undefined && $sessionStorage.user.login != null) {
                     return true;
@@ -89,15 +99,13 @@ angular.module('son')
             };
 
 
-
-
             authService.logout = function () {
                 delete $sessionStorage.user;
                 delete $localStorage.user;
             };
-            
-            authService.recoverySenhaEmail = function(emailStr){
-            	return $http.post(APP_END_POINT+'/api/admin/usuarios/recovery',{email: emailStr});
+
+            authService.recoverySenhaEmail = function (emailStr) {
+                return $http.post(APP_END_POINT + '/api/admin/usuarios/recovery', {email: emailStr});
             };
 
 
@@ -158,7 +166,7 @@ angular.module('son')
             };
 
             pessoaService.deletePessoa = function (id) {
-              return $http.delete(APP_END_POINT + '/pessoa/'+id);
+                return $http.delete(APP_END_POINT + '/pessoa/' + id);
             };
 
             pessoaService.postPessoa = function (pessoa) {
@@ -177,9 +185,9 @@ angular.module('son')
                 return APP_END_POINT + '/pessoas/autocomplete/'
             };
 
-            pessoaService.getPessoasURLAsync=function (des) {
+            pessoaService.getPessoasURLAsync = function (des) {
 
-                return $http.get(APP_END_POINT+'/pessoas/urlasync/'+des).then(function(response) {
+                return $http.get(APP_END_POINT + '/pessoas/urlasync/' + des).then(function (response) {
                     return response.data.data.map(function (pessoa) {
                         return pessoa.nome;
                     });
@@ -197,9 +205,9 @@ angular.module('son')
             var ItemService = {};
 
             ItemService.setUnidade = function (unidade) {
-                if(unidade._id > -1){
+                if (unidade._id > -1) {
                     return $http.put(APP_END_POINT + '/unidade', unidade);
-                }else {
+                } else {
                     return $http.post(APP_END_POINT + '/unidade', unidade);
                 }
             };
@@ -213,11 +221,11 @@ angular.module('son')
             };
 
             ItemService.delUnidade = function (id) {
-              return $http.delete(APP_END_POINT + '/unidade/'+id)
+                return $http.delete(APP_END_POINT + '/unidade/' + id)
             };
 
             ItemService.getQtdVasilhameCodUnidade = function (codUnidade) {
-              return $http.get(APP_END_POINT + '/unidade/vasilhame/'+codUnidade);
+                return $http.get(APP_END_POINT + '/unidade/vasilhame/' + codUnidade);
             };
 
             ItemService.postVasilhames = function (v) {
@@ -231,9 +239,9 @@ angular.module('son')
             /////////////
 
             ItemService.setRua = function (rua) {
-                if(rua._id > -1){
+                if (rua._id > -1) {
                     return $http.put(APP_END_POINT + '/rua', rua);
-                }else {
+                } else {
                     return $http.post(APP_END_POINT + '/rua', rua);
                 }
             };
@@ -243,26 +251,26 @@ angular.module('son')
             };
 
             ItemService.delRua = function (id) {
-                return $http.delete(APP_END_POINT + '/rua/'+id)
+                return $http.delete(APP_END_POINT + '/rua/' + id)
             };
 
 
             ////////////
 
-            ItemService.setItem=function (item,flgItemPesquisado) {
-              if(flgItemPesquisado != 0){
-                  return $http.put(APP_END_POINT + '/item',item);
-              }else{
-                  return $http.post(APP_END_POINT + '/item',item);
-              }
+            ItemService.setItem = function (item, flgItemPesquisado) {
+                if (flgItemPesquisado != 0) {
+                    return $http.put(APP_END_POINT + '/item', item);
+                } else {
+                    return $http.post(APP_END_POINT + '/item', item);
+                }
             };
 
-            ItemService.getItens= function (item) {
-              return $http.post(APP_END_POINT + '/itens',item);
+            ItemService.getItens = function (item) {
+                return $http.post(APP_END_POINT + '/itens', item);
             };
 
             ItemService.delItem = function (id) {
-              return $http.delete(APP_END_POINT+'/item/'+id);
+                return $http.delete(APP_END_POINT + '/item/' + id);
             };
 
             return ItemService;
@@ -273,27 +281,27 @@ angular.module('son')
 
             var veiculoService = {};
 
-            veiculoService.setVeiculo = function (veiculo,flgItemPesquisado) {
-                if(flgItemPesquisado != 0){
+            veiculoService.setVeiculo = function (veiculo, flgItemPesquisado) {
+                if (flgItemPesquisado != 0) {
                     //console.log('foi no put');
                     return $http.put(APP_END_POINT + '/veiculo', veiculo);
-                }else {
+                } else {
                     //console.log('foi no post');
                     return $http.post(APP_END_POINT + '/veiculo', veiculo);
                 }
             };
 
             veiculoService.delVeiculo = function (id) {
-                return $http.delete(APP_END_POINT + '/veiculo/'+id);
+                return $http.delete(APP_END_POINT + '/veiculo/' + id);
             };
 
             veiculoService.getVeiculoID = function (id) {
-              return $http.get(APP_END_POINT + '/veiculo/id/'+id);
+                return $http.get(APP_END_POINT + '/veiculo/id/' + id);
             };
 
             veiculoService.findVeiculos = function (veiculo) {
                 //console.log('factory veiculo ' + JSON.stringify(veiculo));
-                return $http.post(APP_END_POINT + '/veiculos',veiculo);
+                return $http.post(APP_END_POINT + '/veiculos', veiculo);
             };
 
             return veiculoService;
@@ -304,76 +312,76 @@ angular.module('son')
 
             var movimentoService = {};
 
-            movimentoService.getVeiculosURLAsyncService=function (des) {
-               // //console.log('executando o metodo');
-                return $http.get(APP_END_POINT+'/veiculos/urlasync/'+des).then(function(response) {
-                    var resposta = response.data;
-                    if(resposta.type == true){
-                        return response.data.data;
-                    }else{
-                        return null;
-                    }
-
-                });
-
-
-            };
-
-            movimentoService.getMotoristasURLAsyncService=function (des) {
+            movimentoService.getVeiculosURLAsyncService = function (des) {
                 // //console.log('executando o metodo');
-                return $http.get(APP_END_POINT+'/pessoas/funcionarios/motoristas/urlasync/'+des).then(function(response) {
+                return $http.get(APP_END_POINT + '/veiculos/urlasync/' + des).then(function (response) {
                     var resposta = response.data;
-                    if(resposta.type == true){
+                    if (resposta.type == true) {
                         return response.data.data;
-                    }else{
+                    } else {
                         return null;
                     }
 
                 });
+
+
             };
 
-            movimentoService.getConferentesURLAsyncService=function (des) {
+            movimentoService.getMotoristasURLAsyncService = function (des) {
                 // //console.log('executando o metodo');
-                return $http.get(APP_END_POINT+'/pessoas/funcionarios/conferentes/urlasync/'+des).then(function(response) {
+                return $http.get(APP_END_POINT + '/pessoas/funcionarios/motoristas/urlasync/' + des).then(function (response) {
                     var resposta = response.data;
-                    if(resposta.type == true){
+                    if (resposta.type == true) {
                         return response.data.data;
-                    }else{
+                    } else {
                         return null;
                     }
 
                 });
             };
 
-            movimentoService.getPessoaClienteURLAsyncService=function (des) {
-                return $http.get(APP_END_POINT+'/pessoas/clientes/urlasync/'+des).then(function(response) {
-                    var resposta = response.data;
-                    if(resposta.type == true){
-                        return response.data.data;
-                    }else{
-                        return null;
-                    }
-
-                });
-            };
-            movimentoService.getPessoaForcedorURLAsyncService=function (des) {
-                return $http.get(APP_END_POINT+'/pessoas/fornecedores/urlasync/'+des).then(function(response) {
-                    var resposta = response.data;
-                    if(resposta.type == true){
-                        return response.data.data;
-                    }else{
-                        return null;
-                    }
-
-                });
-            };
-            movimentoService.getItensURLAsyncService=function (des) {
+            movimentoService.getConferentesURLAsyncService = function (des) {
                 // //console.log('executando o metodo');
-                return $http.get(APP_END_POINT+'/itens/urlasync/'+des).then(function(response) {
+                return $http.get(APP_END_POINT + '/pessoas/funcionarios/conferentes/urlasync/' + des).then(function (response) {
                     var resposta = response.data;
-                    if(resposta.type == true){
+                    if (resposta.type == true) {
                         return response.data.data;
-                    }else{
+                    } else {
+                        return null;
+                    }
+
+                });
+            };
+
+            movimentoService.getPessoaClienteURLAsyncService = function (des) {
+                return $http.get(APP_END_POINT + '/pessoas/clientes/urlasync/' + des).then(function (response) {
+                    var resposta = response.data;
+                    if (resposta.type == true) {
+                        return response.data.data;
+                    } else {
+                        return null;
+                    }
+
+                });
+            };
+            movimentoService.getPessoaForcedorURLAsyncService = function (des) {
+                return $http.get(APP_END_POINT + '/pessoas/fornecedores/urlasync/' + des).then(function (response) {
+                    var resposta = response.data;
+                    if (resposta.type == true) {
+                        return response.data.data;
+                    } else {
+                        return null;
+                    }
+
+                });
+            };
+            movimentoService.getItensURLAsyncService = function (des) {
+                // //console.log('executando o metodo');
+                return $http.get(APP_END_POINT + '/itens/urlasync/' + des).then(function (response) {
+                    var resposta = response.data;
+                    if (resposta.type == true) {
+                        return response.data.data;
+                    } else {
                         return null;
                     }
 
@@ -382,18 +390,18 @@ angular.module('son')
 
             };
 
-            movimentoService.setMovimento= function (movimento, flgItemPesquisado) {
-                if(flgItemPesquisado != 0){
-                    console.log('foi no put'+JSON.stringify(movimento));
+            movimentoService.setMovimento = function (movimento, flgItemPesquisado) {
+                if (flgItemPesquisado != 0) {
+                    console.log('foi no put' + JSON.stringify(movimento));
                     return $http.put(APP_END_POINT + '/movimento', movimento);
-                }else {
+                } else {
                     //console.log('foi no post'+JSON.stringify(movimento));
                     return $http.post(APP_END_POINT + '/movimento', movimento);
                 }
             };
 
             movimentoService.getMovimentos = function (movimento) {
-              return   $http.post(APP_END_POINT + '/movimentos', movimento);
+                return $http.post(APP_END_POINT + '/movimentos', movimento);
             };
 
 
@@ -406,25 +414,24 @@ angular.module('son')
 
             var motoristaService = {};
 
-            motoristaService.setMotorista = function (motorista,flgItemPesquisado) {
-                if(flgItemPesquisado != 0){
+            motoristaService.setMotorista = function (motorista, flgItemPesquisado) {
+                if (flgItemPesquisado != 0) {
                     //console.log('foi no put');
                     return $http.put(APP_END_POINT + '/motorista', motorista);
-                }else {
+                } else {
                     //console.log('foi no post');
                     return $http.post(APP_END_POINT + '/motorista', motorista);
                 }
             };
 
             motoristaService.delMotorista = function (id) {
-                return $http.delete(APP_END_POINT + '/motorista/'+id);
+                return $http.delete(APP_END_POINT + '/motorista/' + id);
             };
-
 
 
             motoristaService.findMotoristas = function (motorista) {
                 //console.log('factory veiculo ' + JSON.stringify(motorista));
-                return $http.post(APP_END_POINT + '/motoristas',motorista);
+                return $http.post(APP_END_POINT + '/motoristas', motorista);
             };
 
             return motoristaService;
@@ -436,47 +443,46 @@ angular.module('son')
             var relatorioService = {};
 
 
-
             relatorioService.getPosicaoItem = function () {
                 return $http.get(APP_END_POINT + '/relatorio/posicao/item');
             };
 
             relatorioService.getPosicaoItemUnidadeId = function (findItem) {
-                return $http.post(APP_END_POINT + '/relatorio/posicao/item/unidade',findItem);
+                return $http.post(APP_END_POINT + '/relatorio/posicao/item/unidade', findItem);
             };
 
             relatorioService.getPosicaoItemIds = function (ids) {
-                return $http.post(APP_END_POINT + '/relatorio/posicao/item/ids',{ids: ids});
+                return $http.post(APP_END_POINT + '/relatorio/posicao/item/ids', {ids: ids});
             };
 
             relatorioService.getPosicaoItemId = function (id) {
-                return $http.get(APP_END_POINT + '/relatorio/posicao/item/'+id);
+                return $http.get(APP_END_POINT + '/relatorio/posicao/item/' + id);
             };
 
             relatorioService.getAuditoriaItemId = function (id) {
-                return $http.get(APP_END_POINT + '/relatorio/auditoria/item/'+id);
+                return $http.get(APP_END_POINT + '/relatorio/auditoria/item/' + id);
             };
 
             relatorioService.getInventario = function (inventario) {
-                return $http.post(APP_END_POINT + '/relatorio/inventario/all',inventario);
+                return $http.post(APP_END_POINT + '/relatorio/inventario/all', inventario);
             };
 
             return relatorioService;
         }])
-    .factory('timesInterceptor',[
-        function(){
+    .factory('timesInterceptor', [
+        function () {
 
             return {
 
-                request: function(config){
+                request: function (config) {
                     /*
-                    var url = config.url;
+                     var url = config.url;
 
-                    if(url.indexOf(".html") > -1) return config;
+                     if(url.indexOf(".html") > -1) return config;
 
-                    var timestamp= new Date().getTime();
-                    config.url =  url +"?timestamp="+timestamp;
-                    */
+                     var timestamp= new Date().getTime();
+                     config.url =  url +"?timestamp="+timestamp;
+                     */
                     return config;
                 }
             }
@@ -488,17 +494,16 @@ angular.module('son')
             var conferenciaService = {};
 
 
-
             conferenciaService.getItens = function () {
-                return $http.get(APP_END_POINT+'/itens/urlasync/all');
+                return $http.get(APP_END_POINT + '/itens/urlasync/all');
             };
 
             conferenciaService.getItemAsync = function (des) {
-                return $http.get(APP_END_POINT+'/itens/urlasync/'+des).then(function(response) {
+                return $http.get(APP_END_POINT + '/itens/urlasync/' + des).then(function (response) {
                     var resposta = response.data;
-                    if(resposta.type == true){
+                    if (resposta.type == true) {
                         return response.data.data;
-                    }else{
+                    } else {
                         return null;
                     }
 
@@ -506,13 +511,13 @@ angular.module('son')
             };
 
             conferenciaService.postConferencia = function (itensFuncao) {
-                console.log(' post itens '+JSON.stringify(itensFuncao));
+                console.log(' post itens ' + JSON.stringify(itensFuncao));
 
-                return $http.post(APP_END_POINT+'/itens/conferencia',itensFuncao);
+                return $http.post(APP_END_POINT + '/itens/conferencia', itensFuncao);
             };
 
             conferenciaService.getConferencias = function (conferenciaBusca) {
-              return $http.post(APP_END_POINT+'/conferencias',conferenciaBusca);
+                return $http.post(APP_END_POINT + '/conferencias', conferenciaBusca);
             };
 
             return conferenciaService;
