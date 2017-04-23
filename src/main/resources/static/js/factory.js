@@ -49,7 +49,8 @@ angular.module('son')
                     accountNonExpired: usuarioAFormatar.accountNonExpired,
                     accountNonLocked: usuarioAFormatar.accountNonLocked,
                     credentialsNonExpired: usuarioAFormatar.credentialsNonExpired,
-                    enabled: usuarioAFormatar.enabled
+                    enabled: usuarioAFormatar.enabled,
+                    picture: './img/profile/'+usuarioAFormatar.login+'.jpg'
                 };
 
                 for(var i=0;i<usuarioAFormatar.roles.length; i++){

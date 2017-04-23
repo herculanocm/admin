@@ -2,11 +2,15 @@ package com.cunha.admin.conf;
 
 import java.util.Properties;
 
+import javax.servlet.MultipartConfigElement;
+
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -25,10 +29,24 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
 		return new RestTemplate();
 	}
 	
-	
+	/*
 	@Bean
 	public MultipartResolver multipartResolver() {
 		return new StandardServletMultipartResolver();
+	}
+	*/
+	
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+	    return new CommonsMultipartResolver();
+	}
+
+	@Bean
+	public MultipartConfigElement multipartConfigElement() {
+	    MultipartConfigFactory factory = new MultipartConfigFactory();
+	    factory.setMaxFileSize("500MB");
+	    factory.setMaxRequestSize("500MB");
+	    return factory.createMultipartConfig();
 	}
 	
 	

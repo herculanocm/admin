@@ -15345,6 +15345,10 @@ flatdoc [role~="flatdoc-content"] > h3 {
   min-width: 0;
 }
 
+.div-margin10{
+	 margin-top: 20px;
+}
+
 .visibility {
   visibility:hidden;
 }

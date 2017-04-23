@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cunha.admin.aux.EmailAux;
 import com.cunha.admin.daos.UserDAO;
 import com.cunha.admin.models.Usuario;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -47,31 +46,54 @@ public class UsuarioController {
 	@Autowired
 	private ObjectMapper mapper;
 	
+	private static String ROOTPATH =  System.getProperty("user.dir");
+	private static String RESOURCES = "/src/main/resources/static/img/profile/";
 	
 	
-	@RequestMapping(value="/upload", method=RequestMethod.GET)
-    public @ResponseBody String provideUploadInfo() {
-        return "You can upload a file by posting to this same URL.";
-    }
+	
 
     @RequestMapping(value="/upload", method=RequestMethod.POST)
-    public @ResponseBody String handleFileUpload(String name, MultipartFile file){
+    public ResponseEntity<Object> handleFileUpload(@RequestParam("name") String name,@RequestParam("file") MultipartFile file){
     	System.out.println("comecou o upload");
+    	System.out.println("file getName : "+file.getName());
+    	System.out.println("file getOriginalFilename : "+file.getOriginalFilename());
+    	System.out.println("caminho do contexto : "+(ROOTPATH+RESOURCES));
+    	String caminhoNome = ROOTPATH + RESOURCES + name + ".jpg";
+    	System.out.println(" caminhoNome : "+caminhoNome);
+    	
+    	
+    	
+		HttpStatus httpStatus = null;
+		ObjectNode nodeResposta = mapper.createObjectNode();
+		
+		
+    	
+    	
+    	
         if (!file.isEmpty()) {
-        	System.out.println("file não e vazio");
+        	System.out.println("file não e vazio");  
             try {
                 byte[] bytes = file.getBytes();
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(name)));
+                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(caminhoNome)));
                 stream.write(bytes);
                 stream.close();
                 System.out.println("upload com sucesso");
-                return "You successfully uploaded " + name + "!";
+                
+                nodeResposta.put("descricao", "Imagem recebida com sucesso!");
+        		httpStatus = HttpStatus.OK;
+        		return new ResponseEntity<Object>(nodeResposta, new HttpHeaders(), httpStatus);
+
             } catch (Exception e) {
-                return "You failed to upload " + name + " => " + e.getMessage();
+            	nodeResposta.put("descricao", "Problema ao receber imagem!");
+        		httpStatus = HttpStatus.NOT_FOUND;
+        		return new ResponseEntity<Object>(nodeResposta, new HttpHeaders(), httpStatus);
             }
         } else {
         	System.out.println("file e vazio");
-            return "You failed to upload " + name + " because the file was empty.";
+        	
+        	nodeResposta.put("descricao", "Problema ao receber imagem!");
+    		httpStatus = HttpStatus.NOT_FOUND;
+    		return new ResponseEntity<Object>(nodeResposta, new HttpHeaders(), httpStatus);
         }
     }
 	
@@ -161,6 +183,8 @@ public class UsuarioController {
 		
 		HttpStatus httpStatus = null;
 		ObjectNode nodeResposta = mapper.createObjectNode();
+		
+		
 		
 		Usuario usuarioLoad= userDAO.carregaUsuairoLogin(usuario.getLogin().toLowerCase());
 		

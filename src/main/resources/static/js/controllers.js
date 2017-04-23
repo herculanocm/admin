@@ -661,7 +661,7 @@ angular
                 $scope.upload = function (file) {
                     Upload.upload({
                         url: APP_END_POINT+'/api/admin/usuarios/upload',
-                        data: {'file': file, 'name': $scope.usuarioProfile.name}
+                        data: {'file': file, 'name': $scope.usuarioProfile.login}
                     }).then(function (resp) {
                         console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
                     }, function (resp) {
